@@ -13,6 +13,11 @@
 		8EC6735725E07FDF003533BE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EC6735625E07FDF003533BE /* Preview Assets.xcassets */; };
 		8EC6736225E07FE0003533BE /* bikeshare_widgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6736125E07FE0003533BE /* bikeshare_widgetTests.swift */; };
 		8EC6736D25E07FE0003533BE /* bikeshare_widgetUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6736C25E07FE0003533BE /* bikeshare_widgetUITests.swift */; };
+		8EC6738425E15B52003533BE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EC6738325E15B52003533BE /* WidgetKit.framework */; };
+		8EC6738625E15B52003533BE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EC6738525E15B52003533BE /* SwiftUI.framework */; };
+		8EC6738925E15B53003533BE /* CountryWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6738825E15B53003533BE /* CountryWidget.swift */; };
+		8EC6738B25E15B57003533BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EC6738A25E15B57003533BE /* Assets.xcassets */; };
+		8EC6738F25E15B57003533BE /* CountryWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8EC6738125E15B52003533BE /* CountryWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,7 +35,28 @@
 			remoteGlobalIDString = 8EC6734B25E07FDB003533BE;
 			remoteInfo = "bikeshare-widget";
 		};
+		8EC6738D25E15B57003533BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8EC6734425E07FDB003533BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8EC6738025E15B52003533BE;
+			remoteInfo = CountryWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8EC6739325E15B57003533BE /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8EC6738F25E15B57003533BE /* CountryWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8EC6734C25E07FDB003533BE /* bikeshare-widget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bikeshare-widget.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +71,12 @@
 		8EC6736825E07FE0003533BE /* bikeshare-widgetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bikeshare-widgetUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC6736C25E07FE0003533BE /* bikeshare_widgetUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bikeshare_widgetUITests.swift; sourceTree = "<group>"; };
 		8EC6736E25E07FE0003533BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EC6738125E15B52003533BE /* CountryWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CountryWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EC6738325E15B52003533BE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		8EC6738525E15B52003533BE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		8EC6738825E15B53003533BE /* CountryWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryWidget.swift; sourceTree = "<group>"; };
+		8EC6738A25E15B57003533BE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8EC6738C25E15B57003533BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +101,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8EC6737E25E15B52003533BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC6738625E15B52003533BE /* SwiftUI.framework in Frameworks */,
+				8EC6738425E15B52003533BE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,6 +119,8 @@
 				8EC6734E25E07FDB003533BE /* bikeshare-widget */,
 				8EC6736025E07FE0003533BE /* bikeshare-widgetTests */,
 				8EC6736B25E07FE0003533BE /* bikeshare-widgetUITests */,
+				8EC6738725E15B52003533BE /* CountryWidget */,
+				8EC6738225E15B52003533BE /* Frameworks */,
 				8EC6734D25E07FDB003533BE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +131,7 @@
 				8EC6734C25E07FDB003533BE /* bikeshare-widget.app */,
 				8EC6735D25E07FE0003533BE /* bikeshare-widgetTests.xctest */,
 				8EC6736825E07FE0003533BE /* bikeshare-widgetUITests.xctest */,
+				8EC6738125E15B52003533BE /* CountryWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -130,6 +174,25 @@
 			path = "bikeshare-widgetUITests";
 			sourceTree = "<group>";
 		};
+		8EC6738225E15B52003533BE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8EC6738325E15B52003533BE /* WidgetKit.framework */,
+				8EC6738525E15B52003533BE /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8EC6738725E15B52003533BE /* CountryWidget */ = {
+			isa = PBXGroup;
+			children = (
+				8EC6738825E15B53003533BE /* CountryWidget.swift */,
+				8EC6738A25E15B57003533BE /* Assets.xcassets */,
+				8EC6738C25E15B57003533BE /* Info.plist */,
+			);
+			path = CountryWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,10 +203,12 @@
 				8EC6734825E07FDB003533BE /* Sources */,
 				8EC6734925E07FDB003533BE /* Frameworks */,
 				8EC6734A25E07FDB003533BE /* Resources */,
+				8EC6739325E15B57003533BE /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8EC6738E25E15B57003533BE /* PBXTargetDependency */,
 			);
 			name = "bikeshare-widget";
 			productName = "bikeshare-widget";
@@ -186,6 +251,23 @@
 			productReference = 8EC6736825E07FE0003533BE /* bikeshare-widgetUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		8EC6738025E15B52003533BE /* CountryWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8EC6739025E15B57003533BE /* Build configuration list for PBXNativeTarget "CountryWidgetExtension" */;
+			buildPhases = (
+				8EC6737D25E15B52003533BE /* Sources */,
+				8EC6737E25E15B52003533BE /* Frameworks */,
+				8EC6737F25E15B52003533BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CountryWidgetExtension;
+			productName = CountryWidgetExtension;
+			productReference = 8EC6738125E15B52003533BE /* CountryWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -206,6 +288,9 @@
 						CreatedOnToolsVersion = 12.4;
 						TestTargetID = 8EC6734B25E07FDB003533BE;
 					};
+					8EC6738025E15B52003533BE = {
+						CreatedOnToolsVersion = 12.4;
+					};
 				};
 			};
 			buildConfigurationList = 8EC6734725E07FDB003533BE /* Build configuration list for PBXProject "bikeshare-widget" */;
@@ -224,6 +309,7 @@
 				8EC6734B25E07FDB003533BE /* bikeshare-widget */,
 				8EC6735C25E07FE0003533BE /* bikeshare-widgetTests */,
 				8EC6736725E07FE0003533BE /* bikeshare-widgetUITests */,
+				8EC6738025E15B52003533BE /* CountryWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -249,6 +335,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC6737F25E15B52003533BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC6738B25E15B57003533BE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +374,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8EC6737D25E15B52003533BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC6738925E15B53003533BE /* CountryWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -292,6 +394,11 @@
 			isa = PBXTargetDependency;
 			target = 8EC6734B25E07FDB003533BE /* bikeshare-widget */;
 			targetProxy = 8EC6736925E07FE0003533BE /* PBXContainerItemProxy */;
+		};
+		8EC6738E25E15B57003533BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8EC6738025E15B52003533BE /* CountryWidgetExtension */;
+			targetProxy = 8EC6738D25E15B57003533BE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -415,6 +522,7 @@
 		8EC6737225E07FE0003533BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -437,6 +545,7 @@
 		8EC6737325E07FE0003533BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -540,6 +649,48 @@
 			};
 			name = Release;
 		};
+		8EC6739125E15B57003533BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 224WGVVZC5;
+				INFOPLIST_FILE = CountryWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hobby.mubarak.bikeshare-widget.CountryWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8EC6739225E15B57003533BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 224WGVVZC5;
+				INFOPLIST_FILE = CountryWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hobby.mubarak.bikeshare-widget.CountryWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -575,6 +726,15 @@
 			buildConfigurations = (
 				8EC6737825E07FE0003533BE /* Debug */,
 				8EC6737925E07FE0003533BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8EC6739025E15B57003533BE /* Build configuration list for PBXNativeTarget "CountryWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EC6739125E15B57003533BE /* Debug */,
+				8EC6739225E15B57003533BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
