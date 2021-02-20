@@ -2,10 +2,18 @@ import WidgetKit
 import SwiftUI
 import MapKit
 
-struct Country {
-    let name: String
-    let capital: String
-    var region: MKCoordinateRegion {
+struct MapEntry: TimelineEntry {
+    let date: Date
+    let nearestStations: [Station]
+    let userLocation: MKCoordinateRegion
+    let image: UIImage
+}
+
+struct NearbyStationProvider: TimelineProvider {
+    static let emptyDataSet = [Station]()
+    
+    // TODO: Ensure user location is updated dynamically
+    static var sampleUserLocation: MKCoordinateRegion {
         let latitude = CLLocationDegrees(43.651890)
         let longitude = CLLocationDegrees(-79.381706)
         
@@ -15,64 +23,63 @@ struct Country {
                                   latitudinalMeters: 1000.0,
                                   longitudinalMeters: 1000.0)
     }
-}
-
-struct CountryProvider: TimelineProvider {
-    static let sampleData = Country(name: "United Kingdom", capital: "London")
     
     func placeholder(in context: Context) -> MapEntry {
-        MapEntry(date: Date(), country: CountryProvider.sampleData, image: UIImage())
+        MapEntry(date: Date(), nearestStations: NearbyStationProvider.emptyDataSet, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (MapEntry) -> ()) {
-        let country: Country
+        let nearestStations: [Station]
         
         if context.isPreview {
-            country = CountryProvider.sampleData
+            nearestStations = NearbyStationProvider.emptyDataSet
         } else {
-            country = loadCountries().first ?? CountryProvider.sampleData
+            nearestStations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
         }
         
-        let entry = MapEntry(date: Date(), country: country, image: UIImage())
+        let entry = MapEntry(date: Date(), nearestStations: nearestStations, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
         
         completion(entry)
     }
 
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
-        let countries = loadCountries()
-        
-        if let country = countries.first {
-            let mapSnapshotter = makeSnapshotter(for: country, with: context.displaySize)
+        let locations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
+        let mapSnapshotter = makeSnapshotter(for: NearbyStationProvider.sampleUserLocation, with: context.displaySize)
             
-            mapSnapshotter.start { (snapshot, error) in
-                if let snapshot = snapshot {
-                    let date = Date()
-                    let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
-                    let entry = MapEntry(date: date, country: country, image: snapshot.image)
-                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-                    
-                    completion(timeline)
-                }
+        mapSnapshotter.start { (snapshot, error) in
+            if let snapshot = snapshot {
+                let date = Date()
+                let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
+                let entry = MapEntry(date: date,
+                                     nearestStations: locations,
+                                     userLocation: NearbyStationProvider.sampleUserLocation,
+                                     image: snapshot.image)
+                let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+                
+                completion(timeline)
             }
         }
     }
     
-    private func loadCountries() -> [Country] {
-        let uk = Country(name: "United Kingdom", capital: "London")
-        let canada = Country(name: "Canada", capital: "Toronto")
-        let usa = Country(name: "USA", capital: "Washington")
-        let mexico = Country(name: "Mexico", capital: "Mexico City")
-        let brazil = Country(name: "Brazil", capital: "Sao Paulo")
+    // MARK: Helpers
+    // TODO: Probably put into a networking manager singleton
+    private func loadNearestLocations(userLocation: MKCoordinateRegion) -> [Station] {
+        // TODO: Should use a network request here.
+        let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0)
+        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0)
+        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0)
         
-        return [uk, canada, usa, mexico, brazil]
+        return [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
     }
     
-    private func makeSnapshotter(for country: Country, with size: CGSize) -> MKMapSnapshotter {
+    private func makeSnapshotter(for userRegion: MKCoordinateRegion, with size: CGSize) -> MKMapSnapshotter {
         let options = MKMapSnapshotter.Options()
         let halfHeightSize = CGSize(width: size.width, height: size.height / 2)
         
-        options.region = country.region
+        // TODO: Figure out how to add annotations to map.
+        
+        options.region = userRegion
         options.size = halfHeightSize
         options.mapType = .standard
         
@@ -86,103 +93,30 @@ struct CountryProvider: TimelineProvider {
     }
 }
 
-struct MapEntry: TimelineEntry {
-    let date: Date
-    let country: Country
-    let image: UIImage
-}
-
-struct CountryEntry: TimelineEntry {
-    var date: Date
-    var country: Country
-}
-
-struct MapWidgetEntryView : View {
-    var entry: MapEntry
-
-    var body: some View {
-        MapView(entry: entry)
-        Divider()
-        Text("Nearby Bikes")
-            .font(.subheadline)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
-        HStack {
-            NearbyBikesView(station: Station(address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0))
-            Divider()
-            NearbyBikesView(station: Station(address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0))
-            Divider()
-            NearbyBikesView(station: Station(address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0))
-        }
-        .frame(width: entry.image.size.width,
-               height: entry.image.size.height - 60,
-               alignment: .center)
-    }
-}
-
-struct Station {
-    let address: String
-    let bikeCapacity: Int
-    let distance: Float
-}
-
-struct NearbyBikesView: View {
-    var station: Station
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            HStack(alignment: .top) {
-                Image(systemName: "location.circle")
-                Text(station.address)
-                    .font(.caption)
-            }
-            Spacer()
-            HStack {
-                Image(systemName: "bicycle.circle")
-                Text("\(station.bikeCapacity)")
-                    .font(.caption)
-            }
-            Spacer()
-            HStack {
-                Image(systemName: "mappin.circle")
-                Text(String(format: "%.2f", station.distance))
-                    .font(.caption)
-            }
-        }
-    }
-}
-
-struct MapView: View {
-    let entry: MapEntry
-    
-    var body: some View {
-        VStack {
-            Image(uiImage: entry.image)
-        }
-    }
-}
-
 @main
-struct CountryWidget: Widget {
-    let kind: String = "CountryWidget"
+struct BikeshareWidget: Widget {
+    let kind: String = "BikeshareWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: CountryProvider()) { entry in
+        StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
             MapWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Country of the day")
-        .description("Show a new country every day")
+        .configurationDisplayName("Nearest Bike Stations")
+        .description("Show nearest bike stations")
         .supportedFamilies([.systemLarge])
         .onBackgroundURLSessionEvents { (identifier, completion) in
-            // handle event
+            // TODO: Handle GPS coordinates event?
         }
     }
 }
 
-struct CountryWidget_Previews: PreviewProvider {
+struct BikeshareWidget_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(entry: MapEntry(date: Date(), country: CountryProvider.sampleData, image: UIImage()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        MapView(entry: MapEntry(date: Date(),
+                                nearestStations: NearbyStationProvider.emptyDataSet,
+                                userLocation: NearbyStationProvider.sampleUserLocation,
+                                image: UIImage(systemName: "map")!))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
 
