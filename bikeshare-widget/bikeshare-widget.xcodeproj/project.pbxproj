@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,10 @@
 		8EC6735725E07FDF003533BE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EC6735625E07FDF003533BE /* Preview Assets.xcassets */; };
 		8EC6736225E07FE0003533BE /* bikeshare_widgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6736125E07FE0003533BE /* bikeshare_widgetTests.swift */; };
 		8EC6736D25E07FE0003533BE /* bikeshare_widgetUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6736C25E07FE0003533BE /* bikeshare_widgetUITests.swift */; };
+		F7D0C1FD25E1857700F15128 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D0C1FC25E1857700F15128 /* APIService.swift */; };
+		F7D0C20225E1861600F15128 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D0C20125E1861600F15128 /* Station.swift */; };
+		F7D0C20725E19AA200F15128 /* StationsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D0C20625E19AA200F15128 /* StationsStore.swift */; };
+		F7D0C21325E1AAEE00F15128 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = F7D0C21225E1AAEE00F15128 /* Nimble */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +49,9 @@
 		8EC6736825E07FE0003533BE /* bikeshare-widgetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bikeshare-widgetUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC6736C25E07FE0003533BE /* bikeshare_widgetUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bikeshare_widgetUITests.swift; sourceTree = "<group>"; };
 		8EC6736E25E07FE0003533BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F7D0C1FC25E1857700F15128 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		F7D0C20125E1861600F15128 /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
+		F7D0C20625E19AA200F15128 /* StationsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7D0C21325E1AAEE00F15128 /* Nimble in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +103,8 @@
 		8EC6734E25E07FDB003533BE /* bikeshare-widget */ = {
 			isa = PBXGroup;
 			children = (
+				F7D0C1FB25E184E300F15128 /* Services */,
+				F7D0C1FA25E184DC00F15128 /* Models */,
 				8EC6734F25E07FDB003533BE /* bikeshare_widgetApp.swift */,
 				8EC6735125E07FDB003533BE /* ContentView.swift */,
 				8EC6735325E07FDF003533BE /* Assets.xcassets */,
@@ -130,6 +140,23 @@
 			path = "bikeshare-widgetUITests";
 			sourceTree = "<group>";
 		};
+		F7D0C1FA25E184DC00F15128 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F7D0C20125E1861600F15128 /* Station.swift */,
+				F7D0C20625E19AA200F15128 /* StationsStore.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F7D0C1FB25E184E300F15128 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F7D0C1FC25E1857700F15128 /* APIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -146,6 +173,8 @@
 			dependencies = (
 			);
 			name = "bikeshare-widget";
+			packageProductDependencies = (
+			);
 			productName = "bikeshare-widget";
 			productReference = 8EC6734C25E07FDB003533BE /* bikeshare-widget.app */;
 			productType = "com.apple.product-type.application";
@@ -164,6 +193,9 @@
 				8EC6735F25E07FE0003533BE /* PBXTargetDependency */,
 			);
 			name = "bikeshare-widgetTests";
+			packageProductDependencies = (
+				F7D0C21225E1AAEE00F15128 /* Nimble */,
+			);
 			productName = "bikeshare-widgetTests";
 			productReference = 8EC6735D25E07FE0003533BE /* bikeshare-widgetTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -217,6 +249,9 @@
 				Base,
 			);
 			mainGroup = 8EC6734325E07FDB003533BE;
+			packageReferences = (
+				F7D0C21125E1AAEE00F15128 /* XCRemoteSwiftPackageReference "Nimble" */,
+			);
 			productRefGroup = 8EC6734D25E07FDB003533BE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -260,7 +295,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC6735225E07FDB003533BE /* ContentView.swift in Sources */,
+				F7D0C1FD25E1857700F15128 /* APIService.swift in Sources */,
+				F7D0C20225E1861600F15128 /* Station.swift in Sources */,
 				8EC6735025E07FDB003533BE /* bikeshare_widgetApp.swift in Sources */,
+				F7D0C20725E19AA200F15128 /* StationsStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +618,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F7D0C21125E1AAEE00F15128 /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F7D0C21225E1AAEE00F15128 /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7D0C21125E1AAEE00F15128 /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8EC6734425E07FDB003533BE /* Project object */;
 }

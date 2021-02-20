@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import Nimble
+
 @testable import bikeshare_widget
 
 class bikeshare_widgetTests: XCTestCase {
@@ -19,8 +21,15 @@ class bikeshare_widgetTests: XCTestCase {
     }
 
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let stationService = StationsStoreImpl()
+        
+        stationService.refresh()
+
+        expect(try stationService.stationsResult.get()).toEventuallyNot(beEmpty())
+        
+        print((try? stationService.stationsResult.get())?.debugDescription ?? "Error")
+        
     }
 
     func testPerformanceExample() throws {
