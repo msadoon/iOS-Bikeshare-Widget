@@ -6,15 +6,17 @@ struct ContentView: View {
                 ZStack {
                     Tabbar()
                     // NOTE: Keep in here
-                    Button("🚩 Reload", action: WidgetCenter.shared.reloadAllTimelines)
-                        // NOTE: Kylo --> Go to Add Snippet (top right), select colour pallette and type "Primary" to find Asset Colors!
-                        .frame(minWidth: 0)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color("Primary"), Color("Primary-Dark")]), startPoint: .leading, endPoint: .trailing))
-                        .cornerRadius(40)
-                        .padding(.horizontal, 20)
-                }
+                        VStack(alignment: .trailing) {
+                           // Button("Reload Widget", action: WidgetCenter.shared.reloadAllTimelines)
+                                // NOTE: Kylo --> Go to Add Snippet (top right), select colour pallette and type "Primary" to find Asset Colors!
+                            Button(action: WidgetCenter.shared.reloadAllTimelines) {
+                                        Text("Reload Widget")
+                                    }
+                                    .buttonStyle(CircleStyle())
+                                    .frame(width: 40, height: 40)
+                            Spacer()
+                        }
+                    }
     }
 }
 
@@ -23,3 +25,23 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+struct CircleStyle: ButtonStyle {
+    func makeBody(configuration: ButtonStyleConfiguration) -> some View {
+        Circle()
+            .fill(LinearGradient(gradient: Gradient(colors: [Color("Primary"), Color("Primary-Dark")]), startPoint: .leading, endPoint: .trailing))
+            .overlay(
+                Circle()
+                    .stroke(lineWidth: 2)
+                    .foregroundColor(.white)
+                    .padding(4)
+            )
+            .overlay(
+                configuration.label
+                    .foregroundColor(.white)
+                    .font(.footnote)
+            )
+            .frame(width: 60, height: 60)
+    }
+}
+

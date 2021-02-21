@@ -18,43 +18,63 @@ struct BikeShareAppDetails: View {
             VStack(alignment: .leading, spacing: 4.0) {
                 HStack {
                     Image(systemName: "flag.fill")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("Primary"))
                     Text("Station Name")
                         .font(.body)
                 }
                 Text("Location")
-                    .font(.footnote)
-                    .padding(.bottom, 16.0)
-                HStack {
+                    .font(.caption)
+                    .padding(.bottom, 8.0)
+                    .foregroundColor(Color.gray)
+                HStack{
                     Image(systemName: "location.fill")
-                    Text("Distancec")
-                    HStack (alignment: .lastTextBaseline, spacing: 4.0){
+                    Text("1.8 km")
+                    Spacer()
+                    HStack (alignment: .lastTextBaseline, spacing: 8.0){
                         Image(systemName: "figure.walk")
-                        Text("Walk")
+                            .renderingMode(.template)
+                            .foregroundColor(Color("Primary-Dark"))
+                        Text("6 min")
                         Image(systemName: "car.fill")
-                        Text("Drive")
+                            .renderingMode(.template)
+                            .foregroundColor(Color("Primary-Dark"))
+                        Text("1.3 min")
                     }
                     .frame(alignment: .bottomTrailing)
                 }
+                .imageScale(.large)
                 .font(.footnote)
-                Text("Description")
+                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut lobortis nulla, sed varius augue. ")
                     .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
-                    .padding(.bottom, 16.0)
+                    .foregroundColor(Color.gray)
                 Divider()
+                    .padding(.vertical, 8.0)
                 HStack {
                     HStack {
                         Image(systemName: "bicycle.circle.fill")
                             .renderingMode(.template)
-                            .foregroundColor(Color("Secondary"))
+                            .foregroundColor(Color("Primary-Dark"))
+                            .imageScale(.large)
                         Text("3")
                         Image(systemName: "cart.fill")
+                            .renderingMode(.template)
+                            .foregroundColor(Color("Primary-Dark"))
                         Text("3")
                         Image(systemName: "battery.100.bolt")
+                            .renderingMode(.template)
+                            .foregroundColor(Color("Primary-Dark"))
                         Text("9")
                         
                     }
-                    .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
-                    Button(action: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/{}/*@END_MENU_TOKEN@*/) {
-                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Content@*/Text("Button")/*@END_MENU_TOKEN@*/
+                    .font(.footnote)
+                    .imageScale(.large)
+                    Spacer()
+                    Button(action: {
+                        // What to perform
+                        print("direction button tapped")
+                    }) {
+                        Text("Direction")
                     }
                 }
             }
