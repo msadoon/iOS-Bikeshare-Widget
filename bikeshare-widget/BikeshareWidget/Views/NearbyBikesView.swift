@@ -17,7 +17,7 @@ struct NearbyBikesView: View {
                 Image(systemName: "location.fill")
                     .renderingMode(.template)
                     .foregroundColor(/*@START_MENU_TOKEN@*/Color.green/*@END_MENU_TOKEN@*/)
-                Text(String(format: "%.2f", station.distance) + "km")
+                Text(String(format: "%.2f", station.distance) + "m")
                     .font(.caption)
                     .fontWeight(/*@START_MENU_TOKEN@*/.semibold/*@END_MENU_TOKEN@*/)
                     .padding(.leading, 0.5)

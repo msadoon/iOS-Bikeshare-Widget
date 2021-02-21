@@ -21,8 +21,8 @@ struct NearbyStationProvider: TimelineProvider {
         let locationCoord = CLLocationCoordinate2DMake(latitude, longitude)
         
         return MKCoordinateRegion(center: locationCoord,
-                                  latitudinalMeters: 1000.0,
-                                  longitudinalMeters: 1000.0)
+                                  latitudinalMeters: 500.0,
+                                  longitudinalMeters: 500.0)
     }
     
     func placeholder(in context: Context) -> MapEntry {
@@ -40,9 +40,12 @@ struct NearbyStationProvider: TimelineProvider {
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
         let locations = loadNearestLocations()
-        let mapSnapshotter = makeSnapshotter(for: NearbyStationProvider.sampleUserLocation, with: context.displaySize)
+        
             
         let updateSnapshot: (CLLocation) -> Void = { updatedUserLocation in
+            let region = MKCoordinateRegion(center: updatedUserLocation.coordinate, latitudinalMeters: 500.0, longitudinalMeters: 500.0)
+            let mapSnapshotter = makeSnapshotter(for: region, with: context.displaySize)
+            
             mapSnapshotter.start { (snapshot, error) in
                 guard error == nil,
                       let useableSnapShot = snapshot else { return }
@@ -77,19 +80,19 @@ struct NearbyStationProvider: TimelineProvider {
     
     // MARK: Helpers
     private func loadNearestLocations() -> [Station] {
-        let latitude1 = CLLocationDegrees(43.651890)
-        let longitude1 = CLLocationDegrees(-79.381706)
+        let latitude1 = CLLocationDegrees(43.639832)
+        let longitude1 = CLLocationDegrees(-79.395954)
         let locationCoord1 = CLLocationCoordinate2DMake(latitude1, longitude1)
         
-        let latitude2 = CLLocationDegrees(43.667333)
-        let longitude2 = CLLocationDegrees(-79.399429)
+        let latitude2 = CLLocationDegrees(43.64783)
+        let longitude2 = CLLocationDegrees(-79.370698)
         let locationCoord2 = CLLocationCoordinate2DMake(latitude2, longitude2)
         
-        let latitude3 = CLLocationDegrees(43.667158)
-        let longitude3 = CLLocationDegrees(-79.402761)
+        let latitude3 = CLLocationDegrees(43.66733)
+        let longitude3 = CLLocationDegrees(-79.399429)
         let locationCoord3 = CLLocationCoordinate2DMake(latitude3, longitude3)
         
-        // TODO: Should use a network request here.
+        // TODO: Should use a network request here, sort on nearby_distance and using lat/long for all 500m locations. There should be a way to find all nearest stations to user's current location. Because we have the lat/long data we just need MapKit to find closest lat/long's to user's lat/long. That way we don't rely on nearby_distance.
         let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0, coordinates: locationCoord1)
         let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0, coordinates: locationCoord2)
         let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0, coordinates: locationCoord3)
@@ -102,7 +105,6 @@ struct NearbyStationProvider: TimelineProvider {
         let halfHeightSize = CGSize(width: size.width, height: size.height / 2)
         
         // TODO: Figure out how to add annotations to map.
-        
         options.region = userRegion
         options.size = halfHeightSize
         options.mapType = .standard

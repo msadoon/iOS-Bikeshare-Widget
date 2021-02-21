@@ -8,6 +8,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     override init() {
         super.init()
+        
+        manager.delegate = self
     }
     
     private var isAuthorized: Bool {
@@ -32,5 +34,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         guard let lastLocation = locations.last else { return }
         
         completionHandler?(lastLocation)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // TODO: Probably better ways to handle this...
+        print(error)
     }
 }

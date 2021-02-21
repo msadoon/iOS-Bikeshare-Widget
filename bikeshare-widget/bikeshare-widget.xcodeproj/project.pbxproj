@@ -11,7 +11,6 @@
 		8E57DC0625E1A9E70062D83F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E57DC0525E1A9E70062D83F /* WidgetKit.framework */; };
 		8E57DC0825E1A9E70062D83F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E57DC0725E1A9E70062D83F /* SwiftUI.framework */; };
 		8E57DC0B25E1A9E70062D83F /* BikeshareWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC0A25E1A9E70062D83F /* BikeshareWidget.swift */; };
-		8E57DC0D25E1A9EA0062D83F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E57DC0C25E1A9EA0062D83F /* Assets.xcassets */; };
 		8E57DC1125E1A9EA0062D83F /* BikeshareWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8E57DC0325E1A9E70062D83F /* BikeshareWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8E57DC3625E1C3EB0062D83F /* MapWidgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC2C25E1C3C70062D83F /* MapWidgetEntryView.swift */; };
 		8E57DC3F25E1C3ED0062D83F /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC2625E1C3790062D83F /* Station.swift */; };
@@ -69,7 +68,6 @@
 		8E57DC0525E1A9E70062D83F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8E57DC0725E1A9E70062D83F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		8E57DC0A25E1A9E70062D83F /* BikeshareWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BikeshareWidget.swift; sourceTree = "<group>"; };
-		8E57DC0C25E1A9EA0062D83F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E57DC0E25E1A9EA0062D83F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E57DC2025E1C3270062D83F /* NearbyBikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyBikesView.swift; sourceTree = "<group>"; };
 		8E57DC2625E1C3790062D83F /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
@@ -147,7 +145,6 @@
 				8E57DC6925E1C45E0062D83F /* Views */,
 				8E57DC6E25E1C4670062D83F /* Models */,
 				8E14D20025E1E99C008B5BB3 /* Networking */,
-				8E57DC0C25E1A9EA0062D83F /* Assets.xcassets */,
 				8E57DC0E25E1A9EA0062D83F /* Info.plist */,
 			);
 			path = BikeshareWidget;
@@ -358,7 +355,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E57DC0D25E1A9EA0062D83F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
