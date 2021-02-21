@@ -9,7 +9,6 @@ struct MapWidgetEntryView : View {
     var body: some View {
         MapView(entry: entry)
             .padding(EdgeInsets(top: -37, leading: 0, bottom: 6, trailing: 0))
-        
         HStack {
             Text("🚲")
                 .font(.body)
@@ -29,8 +28,7 @@ struct MapWidgetEntryView : View {
                     Divider()
                 }
             } else {
-                Text("No Nearby Stations 😭")
-                    .font(.caption2)
+                // TODO: Kylo can put an empty view in.
             }
         }
         .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
