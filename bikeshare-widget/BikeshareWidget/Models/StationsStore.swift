@@ -7,11 +7,8 @@
 
 import Foundation
 
-
 protocol StationsStore {
-    func refresh()
-    
-    var stationsResult: Result<[Station], APIError> { get }
+    func fetch(completion: @escaping ((Result<[Station], APIError>) -> Void))
 }
 
 fileprivate struct StationInformationResponse: Decodable {
@@ -34,15 +31,10 @@ class StationsStoreImpl: StationsStore {
         self.stationsResult = .success([])
     }
     
-    func refresh() {
+    func fetch(completion: @escaping ((Result<[Station], APIError>) -> Void)) {
         let urlString = "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information"
-        api.getResource(urlString: urlString) { [weak self] (result: Result<StationInformationResponse, APIError>) in
-            switch result {
-            case let .success(response):
-                self?.stationsResult = .success(response.data.stations)
-            case let .failure(error):
-                self?.stationsResult = .failure(error)
-            }
+        api.getResource(urlString: urlString) { (result: Result<StationInformationResponse, APIError>) in
+            completion(result.map { $0.data.stations })
         }
     }
 }

@@ -12,6 +12,8 @@ struct MapEntry: TimelineEntry {
 
 struct NearbyStationProvider: TimelineProvider {
     static let emptyLocationSet = [Station]()
+
+    private let stationsStore = StationsStoreImpl()
     
     // TODO: This is just a failsafe in case location services are not updated on launch
     static var sampleUserLocation: MKCoordinateRegion {
@@ -39,23 +41,46 @@ struct NearbyStationProvider: TimelineProvider {
         }
         
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            contentUpdate(context: context, locations: loadNearestLocations(userLocation: userLocation), updatedUserLocation: userLocation) { mapEntry in
-                completion(mapEntry)
+            loadNearestLocations(userLocation: userLocation) { result in
+                switch result {
+                case let .success(nearbyStations):
+                    contentUpdate(context: context,
+                                  locations: nearbyStations,
+                                  updatedUserLocation: userLocation) { mapEntry in
+                        DispatchQueue.main.async {
+                            completion(mapEntry)
+                        }
+                    }
+                case .failure(_):
+                    // TODO: Handle error case
+                    break
+                }
             }
         }
-        
         LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
 
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            contentUpdate(context: context, locations: loadNearestLocations(userLocation: userLocation), updatedUserLocation: userLocation) { mapEntry in
-                let date = Date()
-                let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
-                let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
-                
-                completion(timeline)
+            loadNearestLocations(userLocation: userLocation) { result in
+                switch result {
+                case let .success(nearbyStations):
+                    contentUpdate(context: context,
+                                  locations: nearbyStations,
+                                  updatedUserLocation: userLocation) { mapEntry in
+                        let date = Date()
+                        let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
+                        let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
+
+                        DispatchQueue.main.async {
+                            completion(timeline)
+                        }
+                    }
+                case .failure(_):
+                    // TODO: Handle error case
+                    break
+                }
             }
         }
         
@@ -99,28 +124,13 @@ struct NearbyStationProvider: TimelineProvider {
         }
     }
     
-    private func loadNearestLocations(userLocation: CLLocation) -> [Station] {
-        // TODO: Network call here to replace this dummy data
-        
-        let latitude1 = CLLocationDegrees(43.639832)
-        let longitude1 = CLLocationDegrees(-79.395954)
-        let locationCoord1 = CLLocationCoordinate2DMake(latitude1, longitude1)
-
-        let latitude2 = CLLocationDegrees(43.640172)
-        let longitude2 = CLLocationDegrees(-79.391386)
-        let locationCoord2 = CLLocationCoordinate2DMake(latitude2, longitude2)
-
-        let latitude3 = CLLocationDegrees(43.639138)
-        let longitude3 = CLLocationDegrees(-79.392511)
-        let locationCoord3 = CLLocationCoordinate2DMake(latitude3, longitude3)
-        
-        let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0, coordinates: locationCoord1)
-        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0, coordinates: locationCoord2)
-        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0, coordinates: locationCoord3)
-        
-        let allLocations = [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
-        
-        return closestLocations(userLocation: userLocation, stationLocations: allLocations)
+    private func loadNearestLocations(userLocation: CLLocation, completion: @escaping (Result<[Station], APIError>) -> Void) {
+        stationsStore.fetch { result in
+            let mappedResult = result.map { stations in
+                return closestLocations(userLocation: userLocation, stationLocations: stations)
+            }
+            completion(mappedResult)
+        }
     }
     
     private func closestLocations(userLocation: CLLocation, stationLocations: [Station]) -> [Station] {
@@ -140,6 +150,7 @@ struct NearbyStationProvider: TimelineProvider {
         let closestStationDistancesToUser = allDistancesToUser.sorted(by: { $0.0 < $1.0 })
         let closestStationsToUser = closestStationDistancesToUser.map({ (accurateDistance, station) -> Station in
             let updatedStationWithDistance = Station(id: station.id,
+                                                     name: station.name,
                                                      address: station.address,
                                                      bikeCapacity: station.bikeCapacity,
                                                      distance: accurateDistance,
