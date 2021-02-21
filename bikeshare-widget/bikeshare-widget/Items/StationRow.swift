@@ -19,9 +19,26 @@ struct StationRow: View {
                // .background(Color("Primary"))
             
             VStack(alignment: .leading, spacing: 4.0) {
-                Text("Location Name")
-                    .font(.subheadline)
-                    .bold()
+                HStack {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Location Name")
+                                .font(.subheadline)
+                                .bold()
+                            Text("Address")
+                                .font(.footnote)
+                        }
+                        
+                    }
+                    Spacer()
+                    Button(action: {
+                        // What to perform
+                        print("direction button tapped")
+                    }) {
+                        Text("Direction")
+                    }
+                }
+  
                 HStack {
                     Image(systemName: "location.fill")
                         .foregroundColor(Color("Primary-Dark"))
@@ -40,7 +57,7 @@ struct StationRow: View {
             Spacer()
         }
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .padding(.vertical, 16.0)
+        .padding(.vertical, 8.0)
     }
 }
 

@@ -30,12 +30,7 @@ struct CircleStyle: ButtonStyle {
     func makeBody(configuration: ButtonStyleConfiguration) -> some View {
         Circle()
             .fill(LinearGradient(gradient: Gradient(colors: [Color("Primary"), Color("Primary-Dark")]), startPoint: .leading, endPoint: .trailing))
-            .overlay(
-                Circle()
-                    .stroke(lineWidth: 2)
-                    .foregroundColor(.white)
-                    .padding(4)
-            )
+            
             .overlay(
                 configuration.label
                     .foregroundColor(.white)
