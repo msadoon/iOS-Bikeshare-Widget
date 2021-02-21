@@ -18,29 +18,40 @@ struct BikeShareAppDetails: View {
                     .padding(.bottom, 5)
             }
             VStack(alignment: .leading, spacing: 4.0) {
-                Text("Station Name")
-                    .font(.subheadline)
+                HStack {
+                    Image(systemName: "flag.fill")
+                    Text("Station Name")
+                        .font(.body)
+                }
                 Text("Location")
+                    .font(.footnote)
+                    .padding(.bottom, 16.0)
                 HStack {
                     Image(systemName: "location.fill")
                     Text("Distancec")
-                    Image(systemName: "figure.walk")
-                    Text("Walk")
-                    Image(systemName: "car.fill")
-                    Text("Drive")
+                    HStack (alignment: .lastTextBaseline, spacing: 4.0){
+                        Image(systemName: "figure.walk")
+                        Text("Walk")
+                        Image(systemName: "car.fill")
+                        Text("Drive")
+                    }
+                    .frame(alignment: .bottomTrailing)
                 }
-                .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
+                .font(.footnote)
                 Text("Description")
                     .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
+                    .padding(.bottom, 16.0)
                 Divider()
                 HStack {
                     HStack {
                         Image(systemName: "bicycle.circle.fill")
-                        Text("Bike number")
+                            .renderingMode(.template)
+                            .foregroundColor(Color("Secondary"))
+                        Text("3")
                         Image(systemName: "cart.fill")
-                        Text("Emtpy number")
+                        Text("3")
                         Image(systemName: "battery.100.bolt")
-                        Text("Charging number")
+                        Text("9")
                         
                     }
                     .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
@@ -52,12 +63,10 @@ struct BikeShareAppDetails: View {
             }
             .padding(16.0)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color("Background 4")/*@END_MENU_TOKEN@*/)
+        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.white/*@END_MENU_TOKEN@*/)
         .padding()
-        .frame(width: /*@START_MENU_TOKEN@*/100.0/*@END_MENU_TOKEN@*/, height: /*@START_MENU_TOKEN@*/100.0/*@END_MENU_TOKEN@*/)
-        .shadow(color: Color/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/.opacity(0.3), radius:20, x:0, y: 10)
-        .frame(minWidth: .infinity, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 300)
+        .shadow(color: Color("Primary").opacity(0.3), radius:20, x:0, y: 10)
     }
 }
 

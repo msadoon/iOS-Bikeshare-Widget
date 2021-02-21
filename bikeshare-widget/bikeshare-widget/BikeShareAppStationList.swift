@@ -13,7 +13,7 @@ struct BikeShareAppStationList: View {
             StationRow()
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle("List")
+        .navigationTitle("Nearby Stations")
     }
 }
 
