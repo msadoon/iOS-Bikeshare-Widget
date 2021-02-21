@@ -2,9 +2,15 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Nearest Bike Stations App")
-            .font(.largeTitle)
-            .padding()
+        ZStack {
+            BikeShareAppMap()
+            VStack {
+                Text("Nearest Bike Stations App")
+                    .font(.largeTitle)
+                    .padding()
+                BikeShareAppDetails()
+            }
+        }
     }
 }
 
