@@ -1,6 +1,7 @@
 import WidgetKit
 import SwiftUI
 import MapKit
+import CoreLocation
 
 struct MapEntry: TimelineEntry {
     let date: Date
@@ -10,65 +11,110 @@ struct MapEntry: TimelineEntry {
 }
 
 struct NearbyStationProvider: TimelineProvider {
-    static let emptyDataSet = [Station]()
+    static let emptyLocationSet = [Station]()
     
-    // TODO: Ensure user location is updated dynamically
+    // TODO: This is just a failsafe in case location services are not updated on launch
     static var sampleUserLocation: MKCoordinateRegion {
-        let latitude = CLLocationDegrees(43.651890)
-        let longitude = CLLocationDegrees(-79.381706)
+        let latitude = CLLocationDegrees(43.640179)
+        let longitude = CLLocationDegrees(-79.393377)
         
         let locationCoord = CLLocationCoordinate2DMake(latitude, longitude)
         
         return MKCoordinateRegion(center: locationCoord,
-                                  latitudinalMeters: 1000.0,
-                                  longitudinalMeters: 1000.0)
+                                  latitudinalMeters: 500.0,
+                                  longitudinalMeters: 500.0)
     }
     
     func placeholder(in context: Context) -> MapEntry {
-        MapEntry(date: Date(), nearestStations: NearbyStationProvider.emptyDataSet, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
+        MapEntry(date: Date(), nearestStations: NearbyStationProvider.emptyLocationSet, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (MapEntry) -> ()) {
-        let nearestStations: [Station]
-        
-        if context.isPreview {
-            nearestStations = NearbyStationProvider.emptyDataSet
-        } else {
-            nearestStations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
+        guard !context.isPreview else {
+            let mapEntry = MapEntry(date: Date(), nearestStations: NearbyStationProvider.emptyLocationSet, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
+            
+            completion(mapEntry)
+            
+            return
         }
         
-        let entry = MapEntry(date: Date(), nearestStations: nearestStations, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
+        let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
+            contentUpdate(context: context, locations: loadNearestLocations(), updatedUserLocation: userLocation) { mapEntry in
+                completion(mapEntry)
+            }
+        }
         
-        completion(entry)
+        LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
 
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
-        let locations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
-        let mapSnapshotter = makeSnapshotter(for: NearbyStationProvider.sampleUserLocation, with: context.displaySize)
-            
-        mapSnapshotter.start { (snapshot, error) in
-            if let snapshot = snapshot {
+        let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
+            contentUpdate(context: context, locations: loadNearestLocations(), updatedUserLocation: userLocation) { mapEntry in
                 let date = Date()
                 let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
-                let entry = MapEntry(date: date,
-                                     nearestStations: locations,
-                                     userLocation: NearbyStationProvider.sampleUserLocation,
-                                     image: snapshot.image)
-                let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+                let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
                 
                 completion(timeline)
             }
         }
+        
+        LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
     
     // MARK: Helpers
-    // TODO: Probably put into a networking manager singleton
-    private func loadNearestLocations(userLocation: MKCoordinateRegion) -> [Station] {
-        // TODO: Should use a network request here.
-        let firstNearestLocation = Station(id: "7000", address: "Fort York Blvd / Capreol Ct", bikeCapacity: 5, distance: 0.4)
-        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / Mcqueen St E", bikeCapacity: 7, distance: 1.3)
-        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 6, distance: 2.3)
+    private func contentUpdate(context: TimelineProvider.Context, locations: [Station], updatedUserLocation: CLLocation,  completionHandler: @escaping (MapEntry) -> Void) {
+        let region = MKCoordinateRegion(center: updatedUserLocation.coordinate, latitudinalMeters: 500.0, longitudinalMeters: 500.0)
+        let mapSnapshotter = makeSnapshotter(for: region, with: context.displaySize)
+        
+        
+        mapSnapshotter.start { (snapshot, error) in
+            guard error == nil,
+                  let useableSnapShot = snapshot else { return }
+            
+            let image = UIGraphicsImageRenderer(size: useableSnapShot.image.size).image { _ in
+                useableSnapShot.image.draw(at: .zero)
+                
+                let userLocationIconName = "person.crop.circle.fill"
+                let nearestStationIconName = "bicycle"
+                
+                addAnnotation(snapshot: useableSnapShot, location: updatedUserLocation.coordinate, imageName: userLocationIconName)
+                
+                locations.forEach {
+                    addAnnotation(snapshot: useableSnapShot, location: $0.coordinates, imageName: nearestStationIconName)
+                }
+            }
+            
+            let region = MKCoordinateRegion(center: updatedUserLocation.coordinate,
+                                            latitudinalMeters: 500.0,
+                                            longitudinalMeters: 500.0)
+            
+            let entry = MapEntry(date: Date(),
+                             nearestStations: locations,
+                             userLocation: region,
+                             image: image)
+            
+            completionHandler(entry)
+        }
+    }
+    
+    private func loadNearestLocations() -> [Station] {
+        let latitude1 = CLLocationDegrees(43.639832)
+        let longitude1 = CLLocationDegrees(-79.395954)
+        let locationCoord1 = CLLocationCoordinate2DMake(latitude1, longitude1)
+        
+        let latitude2 = CLLocationDegrees(43.64783)
+        let longitude2 = CLLocationDegrees(-79.370698)
+        let locationCoord2 = CLLocationCoordinate2DMake(latitude2, longitude2)
+        
+        let latitude3 = CLLocationDegrees(43.66733)
+        let longitude3 = CLLocationDegrees(-79.399429)
+        let locationCoord3 = CLLocationCoordinate2DMake(latitude3, longitude3)
+        
+        // TODO: Should use a network request here, sort on nearby_distance and using lat/long for all 500m locations. There should be a way to find all nearest stations to user's current location. Because we have the lat/long data we just need MapKit to find closest lat/long's to user's lat/long. That way we don't rely on nearby_distance.
+        let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0, coordinates: locationCoord1)
+        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0, coordinates: locationCoord2)
+        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0, coordinates: locationCoord3)
         
         return [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
     }
@@ -77,13 +123,11 @@ struct NearbyStationProvider: TimelineProvider {
         let options = MKMapSnapshotter.Options()
         let halfHeightSize = CGSize(width: size.width, height: size.height / 2)
         
-        // TODO: Figure out how to add annotations to map.
-        
         options.region = userRegion
         options.size = halfHeightSize
         options.mapType = .standard
         
-        // Force light mode snapshot
+        // NOTE: Force light mode snapshot
         options.traitCollection = UITraitCollection(traitsFrom: [
           options.traitCollection,
           UITraitCollection(userInterfaceStyle: .light)
@@ -91,11 +135,33 @@ struct NearbyStationProvider: TimelineProvider {
 
         return MKMapSnapshotter(options: options)
     }
+    
+    private func addAnnotation(snapshot: MKMapSnapshotter.Snapshot, location: CLLocationCoordinate2D, imageName: String) {
+        let pinView = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
+        
+        pinView.image = UIImage(systemName: imageName)
+        
+        let pinImage = pinView.image
+        
+        var point = snapshot.point(for: location)
+        
+        let containingFrame = CGRect(origin: .zero, size: snapshot.image.size)
+        
+        if containingFrame.contains(point) {
+            point.x -= pinView.bounds.width / 2
+            point.y -= pinView.bounds.height / 2
+            point.x += pinView.centerOffset.x
+            point.y += pinView.centerOffset.y
+            
+            pinImage?.draw(at: point)
+        }
+    }
 }
 
 @main
 struct BikeshareWidget: Widget {
-    let kind: String = "BikeshareWidget"
+    let kind = "BikeshareWidget"
+    let locationManager = CLLocationManager()
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
@@ -104,16 +170,13 @@ struct BikeshareWidget: Widget {
         .configurationDisplayName("Nearest Bike Stations")
         .description("Show nearest bike stations")
         .supportedFamilies([.systemLarge])
-        .onBackgroundURLSessionEvents { (identifier, completion) in
-            // TODO: Handle GPS coordinates event?
-        }
     }
 }
 
 struct BikeshareWidget_Previews: PreviewProvider {
     static var previews: some View {
         MapView(entry: MapEntry(date: Date(),
-                                nearestStations: NearbyStationProvider.emptyDataSet,
+                                nearestStations: NearbyStationProvider.emptyLocationSet,
                                 userLocation: NearbyStationProvider.sampleUserLocation,
                                 image: UIImage(systemName: "map")!))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
