@@ -39,7 +39,7 @@ struct NearbyStationProvider: TimelineProvider {
         }
         
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            contentUpdate(context: context, locations: loadNearestLocations(), updatedUserLocation: userLocation) { mapEntry in
+            contentUpdate(context: context, locations: loadNearestLocations(userLocation: userLocation), updatedUserLocation: userLocation) { mapEntry in
                 completion(mapEntry)
             }
         }
@@ -50,7 +50,7 @@ struct NearbyStationProvider: TimelineProvider {
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            contentUpdate(context: context, locations: loadNearestLocations(), updatedUserLocation: userLocation) { mapEntry in
+            contentUpdate(context: context, locations: loadNearestLocations(userLocation: userLocation), updatedUserLocation: userLocation) { mapEntry in
                 let date = Date()
                 let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
                 let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
@@ -98,27 +98,58 @@ struct NearbyStationProvider: TimelineProvider {
         }
     }
     
-    private func loadNearestLocations() -> [Station] {
+    private func loadNearestLocations(userLocation: CLLocation) -> [Station] {
+        // TODO: Network call here to replace this dummy data
+        
         let latitude1 = CLLocationDegrees(43.639832)
         let longitude1 = CLLocationDegrees(-79.395954)
         let locationCoord1 = CLLocationCoordinate2DMake(latitude1, longitude1)
-        
-        let latitude2 = CLLocationDegrees(43.64783)
-        let longitude2 = CLLocationDegrees(-79.370698)
+
+        let latitude2 = CLLocationDegrees(43.640172)
+        let longitude2 = CLLocationDegrees(-79.391386)
         let locationCoord2 = CLLocationCoordinate2DMake(latitude2, longitude2)
-        
-        let latitude3 = CLLocationDegrees(43.66733)
-        let longitude3 = CLLocationDegrees(-79.399429)
+
+        let latitude3 = CLLocationDegrees(43.639138)
+        let longitude3 = CLLocationDegrees(-79.392511)
         let locationCoord3 = CLLocationCoordinate2DMake(latitude3, longitude3)
         
-        // TODO: Should use a network request here, sort on nearby_distance and using lat/long for all 500m locations. There should be a way to find all nearest stations to user's current location. Because we have the lat/long data we just need MapKit to find closest lat/long's to user's lat/long. That way we don't rely on nearby_distance.
         let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0, coordinates: locationCoord1)
         let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0, coordinates: locationCoord2)
         let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0, coordinates: locationCoord3)
         
-        return [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
+        let allLocations = [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
+        
+        return closestLocations(userLocation: userLocation, stationLocations: allLocations)
     }
     
+    private func closestLocations(userLocation: CLLocation, stationLocations: [Station]) -> [Station] {
+        var allDistancesToUser = [(Double, Station)]()
+        
+        for location in stationLocations {
+            let comparableLocation = CLLocation(latitude: location.coordinates.latitude,
+                                                longitude: location.coordinates.longitude)
+            let distanceToUser = comparableLocation.distance(from: userLocation)
+            let distanceAndStation = (distanceToUser, location)
+            
+            if distanceToUser <= 500 {
+                allDistancesToUser.append(distanceAndStation)
+            }
+        }
+        
+        let closestStationDistancesToUser = allDistancesToUser.sorted(by: { $0.0 < $1.0 })
+        let closestStationsToUser = closestStationDistancesToUser.map({ (accurateDistance, station) -> Station in
+            let updatedStationWithDistance = Station(id: station.id,
+                                                     address: station.address,
+                                                     bikeCapacity: station.bikeCapacity,
+                                                     distance: accurateDistance,
+                                                     coordinates: station.coordinates)
+            
+            return updatedStationWithDistance
+        })
+        
+        return closestStationsToUser
+    }
+ 
     private func makeSnapshotter(for userRegion: MKCoordinateRegion, with size: CGSize) -> MKMapSnapshotter {
         let options = MKMapSnapshotter.Options()
         let halfHeightSize = CGSize(width: size.width, height: size.height / 2)
