@@ -18,7 +18,7 @@ struct NearbyBikesView: View {
             HStack {
                 Image(systemName: "location.fill")
                     .renderingMode(.template)
-                    .foregroundColor(/*@START_MENU_TOKEN@*/Color.green/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(Color("Primary-Dark"))
                 Text(String(format: "%.2f", station.distance) + "m")
                     .font(.caption)
                     .fontWeight(/*@START_MENU_TOKEN@*/.semibold/*@END_MENU_TOKEN@*/)
@@ -28,7 +28,7 @@ struct NearbyBikesView: View {
             HStack {
                 Image(systemName: "bicycle")
                     .renderingMode(.template)
-                    .foregroundColor(/*@START_MENU_TOKEN@*/Color("Primary-dark")/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(Color("Primary-Dark"))
                     .padding(.leading, 6.0)
                     .frame(width: 18.0)
                 Text("\(station.bikeCapacity)")

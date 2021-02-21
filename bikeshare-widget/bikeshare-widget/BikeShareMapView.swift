@@ -13,6 +13,7 @@ struct BikeShareMapView: View {
                 BikeShareAppMapView()
                 BikeShareAppDetails()
             }
+            .navigationTitle("BikeShare")
         }
 }
 
