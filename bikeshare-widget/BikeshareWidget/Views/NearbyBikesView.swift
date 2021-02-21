@@ -11,6 +11,7 @@ struct NearbyBikesView: View {
                     .foregroundColor(/*@START_MENU_TOKEN@*/Color.green/*@END_MENU_TOKEN@*/)
                 Text(station.address)
                     .font(.caption)
+                    .lineLimit(3)
             }
             Spacer()
             HStack {
