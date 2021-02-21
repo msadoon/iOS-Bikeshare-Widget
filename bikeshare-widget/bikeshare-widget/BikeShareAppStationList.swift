@@ -9,12 +9,12 @@ import SwiftUI
 
 struct BikeShareAppStationList: View {
     var body: some View {
-        List(0 ..< 20) { item in
-            StationRow()
+            List(0 ..< 20) { item in
+                StationRow()
+            }
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle("Nearby Stations")
         }
-        .listStyle(InsetGroupedListStyle())
-        .navigationTitle("List")
-    }
 }
 
 struct BikeShareAppStationList_Previews: PreviewProvider {

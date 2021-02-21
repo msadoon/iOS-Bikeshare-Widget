@@ -76,9 +76,10 @@ struct NearbyStationProvider: TimelineProvider {
                 useableSnapShot.image.draw(at: .zero)
                 
                 let userLocationIconName = "person.crop.circle.fill"
-                let nearestStationIconName = "bicycle"
+                let nearestStationIconName = "bicycle.circle.fill"
                 
                 addAnnotation(snapshot: useableSnapShot, location: updatedUserLocation.coordinate, imageName: userLocationIconName)
+                
                 
                 locations.forEach {
                     addAnnotation(snapshot: useableSnapShot, location: $0.coordinates, imageName: nearestStationIconName)

@@ -14,12 +14,14 @@ struct Sidebar: View {
                 NavigationLink(destination:ContentView()) {
                     Label("Map", systemImage: "map.fill")
                 }
-                Label("Station List", systemImage: "list.bullet")
+                NavigationLink(destination:BikeShareAppStationList()) {
+                    Label("Station List", systemImage: "list.bullet")
+                }
                 Label("My Profile", systemImage: "person.circle.fill")
                 Label("Settings", systemImage: "ellipsis.circle.fill")
             }
             .listStyle(SidebarListStyle())
-            .navigationTitle("Learn")
+            .navigationTitle("Navigation")
             .toolbar{
                 ToolbarItem(placement:
                     .navigationBarTrailing){

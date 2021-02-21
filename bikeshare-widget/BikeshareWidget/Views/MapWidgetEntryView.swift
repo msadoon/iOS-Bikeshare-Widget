@@ -28,7 +28,8 @@ struct MapWidgetEntryView : View {
                     Divider()
                 }
             } else {
-                // TODO: Kylo can put an empty view in.
+                Text("There is no nearby station 😥 Try again later")
+                    .font(.caption)
             }
         }
         .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
