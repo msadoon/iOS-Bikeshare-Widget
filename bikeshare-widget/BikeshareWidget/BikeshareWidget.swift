@@ -1,6 +1,7 @@
 import WidgetKit
 import SwiftUI
 import MapKit
+import CoreLocation
 
 struct MapEntry: TimelineEntry {
     let date: Date
@@ -29,13 +30,7 @@ struct NearbyStationProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (MapEntry) -> ()) {
-        let nearestStations: [Station]
-        
-        if context.isPreview {
-            nearestStations = NearbyStationProvider.emptyDataSet
-        } else {
-            nearestStations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
-        }
+        let nearestStations = context.isPreview ? NearbyStationProvider.emptyDataSet : loadNearestLocations()
         
         let entry = MapEntry(date: Date(), nearestStations: nearestStations, userLocation: NearbyStationProvider.sampleUserLocation, image: UIImage(systemName: "map")!)
         
@@ -44,31 +39,60 @@ struct NearbyStationProvider: TimelineProvider {
 
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
-        let locations = loadNearestLocations(userLocation: NearbyStationProvider.sampleUserLocation)
+        let locations = loadNearestLocations()
         let mapSnapshotter = makeSnapshotter(for: NearbyStationProvider.sampleUserLocation, with: context.displaySize)
             
-        mapSnapshotter.start { (snapshot, error) in
-            if let snapshot = snapshot {
+        let updateSnapshot: (CLLocation) -> Void = { updatedUserLocation in
+            mapSnapshotter.start { (snapshot, error) in
+                guard error == nil,
+                      let useableSnapShot = snapshot else { return }
+                
+                let image = UIGraphicsImageRenderer(size: useableSnapShot.image.size).image { _ in
+                    useableSnapShot.image.draw(at: .zero)
+                    
+                    let userLocationIconName = "person.crop.circle.fill"
+                    let nearestStationIconName = "bicycle"
+                    
+                    addAnnotation(snapshot: useableSnapShot, location: updatedUserLocation.coordinate, imageName: userLocationIconName)
+                    
+                    locations.forEach {
+                        addAnnotation(snapshot: useableSnapShot, location: $0.coordinates, imageName: nearestStationIconName)
+                    }
+                }
+                
                 let date = Date()
                 let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
                 let entry = MapEntry(date: date,
                                      nearestStations: locations,
                                      userLocation: NearbyStationProvider.sampleUserLocation,
-                                     image: snapshot.image)
+                                     image: image)
                 let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
                 
                 completion(timeline)
             }
         }
+        
+        LocationManager.shared.fetchLocation(handler: updateSnapshot)
     }
     
     // MARK: Helpers
-    // TODO: Probably put into a networking manager singleton
-    private func loadNearestLocations(userLocation: MKCoordinateRegion) -> [Station] {
+    private func loadNearestLocations() -> [Station] {
+        let latitude1 = CLLocationDegrees(43.651890)
+        let longitude1 = CLLocationDegrees(-79.381706)
+        let locationCoord1 = CLLocationCoordinate2DMake(latitude1, longitude1)
+        
+        let latitude2 = CLLocationDegrees(43.667333)
+        let longitude2 = CLLocationDegrees(-79.399429)
+        let locationCoord2 = CLLocationCoordinate2DMake(latitude2, longitude2)
+        
+        let latitude3 = CLLocationDegrees(43.667158)
+        let longitude3 = CLLocationDegrees(-79.402761)
+        let locationCoord3 = CLLocationCoordinate2DMake(latitude3, longitude3)
+        
         // TODO: Should use a network request here.
-        let firstNearestLocation = Station(id: "7000", address: "Fort York Blvd / Capreol Ct", bikeCapacity: 5, distance: 0.4)
-        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / Mcqueen St E", bikeCapacity: 7, distance: 1.3)
-        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 6, distance: 2.3)
+        let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0, coordinates: locationCoord1)
+        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0, coordinates: locationCoord2)
+        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0, coordinates: locationCoord3)
         
         return [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
     }
@@ -83,7 +107,7 @@ struct NearbyStationProvider: TimelineProvider {
         options.size = halfHeightSize
         options.mapType = .standard
         
-        // Force light mode snapshot
+        // NOTE: Force light mode snapshot
         options.traitCollection = UITraitCollection(traitsFrom: [
           options.traitCollection,
           UITraitCollection(userInterfaceStyle: .light)
@@ -91,11 +115,33 @@ struct NearbyStationProvider: TimelineProvider {
 
         return MKMapSnapshotter(options: options)
     }
+    
+    private func addAnnotation(snapshot: MKMapSnapshotter.Snapshot, location: CLLocationCoordinate2D, imageName: String) {
+        let pinView = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
+        
+        pinView.image = UIImage(systemName: imageName)
+        
+        let pinImage = pinView.image
+        
+        var point = snapshot.point(for: location)
+        
+        let containingFrame = CGRect(origin: .zero, size: snapshot.image.size)
+        
+        if containingFrame.contains(point) {
+            point.x -= pinView.bounds.width / 2
+            point.y -= pinView.bounds.height / 2
+            point.x += pinView.centerOffset.x
+            point.y += pinView.centerOffset.y
+            
+            pinImage?.draw(at: point)
+        }
+    }
 }
 
 @main
 struct BikeshareWidget: Widget {
     let kind: String = "BikeshareWidget"
+    let locationManager = CLLocationManager()
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
@@ -104,9 +150,6 @@ struct BikeshareWidget: Widget {
         .configurationDisplayName("Nearest Bike Stations")
         .description("Show nearest bike stations")
         .supportedFamilies([.systemLarge])
-        .onBackgroundURLSessionEvents { (identifier, completion) in
-            // TODO: Handle GPS coordinates event?
-        }
     }
 }
 

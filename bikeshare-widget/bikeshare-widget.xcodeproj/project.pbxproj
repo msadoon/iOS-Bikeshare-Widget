@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E14D20B25E1ED2E008B5BB3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E14D20125E1E9C2008B5BB3 /* LocationManager.swift */; };
 		8E57DC0625E1A9E70062D83F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E57DC0525E1A9E70062D83F /* WidgetKit.framework */; };
 		8E57DC0825E1A9E70062D83F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E57DC0725E1A9E70062D83F /* SwiftUI.framework */; };
 		8E57DC0B25E1A9E70062D83F /* BikeshareWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC0A25E1A9E70062D83F /* BikeshareWidget.swift */; };
@@ -63,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8E14D20125E1E9C2008B5BB3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		8E57DC0325E1A9E70062D83F /* BikeshareWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BikeshareWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E57DC0525E1A9E70062D83F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8E57DC0725E1A9E70062D83F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -121,6 +123,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E14D20025E1E99C008B5BB3 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				8E14D20125E1E9C2008B5BB3 /* LocationManager.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		8E57DC0425E1A9E70062D83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +146,7 @@
 				8E57DC0A25E1A9E70062D83F /* BikeshareWidget.swift */,
 				8E57DC6925E1C45E0062D83F /* Views */,
 				8E57DC6E25E1C4670062D83F /* Models */,
+				8E14D20025E1E99C008B5BB3 /* Networking */,
 				8E57DC0C25E1A9EA0062D83F /* Assets.xcassets */,
 				8E57DC0E25E1A9EA0062D83F /* Info.plist */,
 			);
@@ -383,6 +394,7 @@
 			files = (
 				8E57DC0B25E1A9E70062D83F /* BikeshareWidget.swift in Sources */,
 				8E57DC5125E1C3F40062D83F /* NearbyBikesView.swift in Sources */,
+				8E14D20B25E1ED2E008B5BB3 /* LocationManager.swift in Sources */,
 				8E57DC6425E1C4520062D83F /* MapView.swift in Sources */,
 				8E57DC3F25E1C3ED0062D83F /* Station.swift in Sources */,
 				8E57DC3625E1C3EB0062D83F /* MapWidgetEntryView.swift in Sources */,
