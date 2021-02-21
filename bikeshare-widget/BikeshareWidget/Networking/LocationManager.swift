@@ -13,27 +13,27 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     private var isAuthorized: Bool {
-        return [CLAuthorizationStatus.authorizedAlways, CLAuthorizationStatus.authorizedWhenInUse].contains(manager.authorizationStatus) && manager.isAuthorizedForWidgetUpdates
+        return manager.isAuthorizedForWidgetUpdates
     }
     
     func fetchLocation(handler: @escaping (CLLocation) -> Void) {
         completionHandler = handler
         
-        DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            
-            if strongSelf.isAuthorized {
-                strongSelf.manager.requestLocation()
-            } else {
-                strongSelf.manager.requestWhenInUseAuthorization()
-            }
+        if isAuthorized {
+            manager.requestLocation()
+        } else {
+            manager.requestWhenInUseAuthorization()
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let lastLocation = locations.last else { return }
         
-        completionHandler?(lastLocation)
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            
+            strongSelf.completionHandler?(lastLocation)
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

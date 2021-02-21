@@ -22,8 +22,6 @@
 	<string>1</string>
 	<key>NSWidgetWantsLocation</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Bikeshare widget would like your location every hour to update its nearest stations.</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
