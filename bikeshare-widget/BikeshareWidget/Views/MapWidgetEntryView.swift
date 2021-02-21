@@ -9,8 +9,6 @@ struct MapWidgetEntryView : View {
     var body: some View {
         MapView(entry: entry)
             .padding(EdgeInsets(top: -37, leading: 0, bottom: 8, trailing: 0))
-        //Divider()
-        
         Text("Nearby Bike Stations")
             .font(.footnote)
             .foregroundColor(Color.gray)
