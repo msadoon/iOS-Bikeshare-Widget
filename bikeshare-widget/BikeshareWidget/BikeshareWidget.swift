@@ -66,9 +66,9 @@ struct NearbyStationProvider: TimelineProvider {
     // TODO: Probably put into a networking manager singleton
     private func loadNearestLocations(userLocation: MKCoordinateRegion) -> [Station] {
         // TODO: Should use a network request here.
-        let firstNearestLocation = Station(id: "7000", address: "Fort York  Blvd / Capreol Ct", bikeCapacity: 35, distance: 500.0)
-        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / The Esplanade", bikeCapacity: 15, distance: 500.0)
-        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 19, distance: 500.0)
+        let firstNearestLocation = Station(id: "7000", address: "Fort York Blvd / Capreol Ct", bikeCapacity: 5, distance: 0.4)
+        let secondNearestLocation = Station(id: "7001", address: "Lower Jarvis St / Mcqueen St E", bikeCapacity: 7, distance: 1.3)
+        let thirdNearestLocation = Station(id: "7002", address: "St. George St / Bloor St W", bikeCapacity: 6, distance: 2.3)
         
         return [firstNearestLocation, secondNearestLocation, thirdNearestLocation]
     }
