@@ -22,4 +22,4 @@ https://docs.google.com/document/d/1fFUbVZTqyzEapmKPTILehrKUpdssHOdbVpHc9oh15KA/
 9. At some point between steps 5 and 8 you will see a Widget Location Permissions dialog (Allow/Don't Allow). Please allow it so the widget can update its layout with your position.
 10. For several minutes you might see a blank layout, this is because the system controls when it shows both the popup above and when it does the layout update for the widget.
 11. The final result should show you your location and the three (or less) closest bikeshare locations to you (within 500 m). It might also show more on the map all within a 500 m range.
-![](https://user-images.githubusercontent.com/4282741/108657063-220c1400-7498-11eb-8db5-724a7e686269.png)
+![](https://user-images.githubusercontent.com/4282741/108659282-b1b1c280-7498-11eb-8fcd-63592ef3d627.jpeg)
