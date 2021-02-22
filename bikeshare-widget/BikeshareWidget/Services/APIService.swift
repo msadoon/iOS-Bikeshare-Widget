@@ -40,7 +40,6 @@ class APIServiceImpl: APIService {
                 return
             }
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             guard let object = try? decoder.decode(T.self, from: nonEmptyData) else {
                 completion(.failure(.parseError))
                 return
