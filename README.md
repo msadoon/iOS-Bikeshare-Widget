@@ -6,6 +6,9 @@ https://docs.google.com/document/d/1fFUbVZTqyzEapmKPTILehrKUpdssHOdbVpHc9oh15KA/
 ### Image Preview
 ![](https://user-images.githubusercontent.com/4282741/108644729-3ba06200-747e-11eb-9920-f6b40c7663f3.jpg))
 
+### API
+https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information
+
 ### Instructions
 1. `git clone` this repo and `checkout` `master`. We used Xcode 12.4 to build this app.
 2. Launch the `bikeshare-widget` scheme to the simulator/device
