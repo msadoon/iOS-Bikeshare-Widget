@@ -3,7 +3,7 @@ import SwiftUI
 struct MapWidgetEntryView : View {
     @State var entry: MapEntry
     private var upperLimitOnNearbyStations: Int {
-        entry.nearestStations.count
+        entry.nearestStations.count > 3 ? 3 : entry.nearestStations.count
     }
     
     var body: some View {

@@ -57,6 +57,7 @@ struct NearbyStationProvider: TimelineProvider {
                 }
             }
         }
+        
         LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
 
