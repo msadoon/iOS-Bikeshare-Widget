@@ -1,13 +1,7 @@
-//
-//  BikeShare-app-Map.swift
-//  bikeshare-widget
-//
-//  Created by Kylo Xue on 2021-02-20.
-//
 import MapKit
 import SwiftUI
 
-struct BikeShareAppMapView: View {
+struct MapView: View {
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
     
     var body: some View {
@@ -21,11 +15,5 @@ struct BikeShareAppMapView: View {
                        maxHeight: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/,
                    alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
         }
-    }
-}
-
-struct BikeShareAppMapPreviews: PreviewProvider {
-    static var previews: some View {
-        BikeShareAppMapView()
     }
 }

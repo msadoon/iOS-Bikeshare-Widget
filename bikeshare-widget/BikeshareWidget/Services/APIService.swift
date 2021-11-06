@@ -1,10 +1,3 @@
-//
-//  APIService.swift
-//  bikeshare-widget
-//
-//  Created by Tom McNeely on 2021-02-20.
-//
-
 import Foundation
 
 enum APIError: Error {
