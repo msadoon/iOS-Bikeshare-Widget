@@ -6,13 +6,12 @@ struct MapView: View {
     @ObservedObject private var stationsViewModel = StationsViewModel()
     
     @State private var showSheet = false
-    @State private var userTrackingMode = MapUserTrackingMode.follow
+    @State private var destinationLocation: CLLocationCoordinate2D?
     
     var body: some View {
         VStack {
-            Map(coordinateRegion: $locationsViewModel.region,
-                showsUserLocation: true,
-                userTrackingMode: $userTrackingMode)
+            AnnotatableRouteMapView(destinationLocation: $destinationLocation,
+                                    defaultRegion: $locationsViewModel.region)
                 .onAppear {
                     locationsViewModel.checkIfLocationServicesIsEnabled()
                 }
@@ -28,6 +27,10 @@ struct MapView: View {
         .sheet(isPresented: $showSheet) {
             List(stationsViewModel.stations) { station in
                 StationRow(station: station)
+                    .onTapGesture {
+                        destinationLocation = station.coordinates
+                        showSheet.toggle()
+                    }
             }
             .padding(EdgeInsets(top: 50.0,
                                 leading: 5.0,

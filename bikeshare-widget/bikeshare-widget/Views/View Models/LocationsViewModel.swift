@@ -1,7 +1,7 @@
 import CoreLocation
 import MapKit
 
-enum LocationDefaults {
+public enum LocationDefaults {
     /**
      - 1 degree delta is equal to about 69 miles
      - 0.310686 miles = 500 meters
