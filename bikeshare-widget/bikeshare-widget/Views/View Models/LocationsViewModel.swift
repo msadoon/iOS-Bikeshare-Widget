@@ -12,7 +12,7 @@ enum LocationDefaults {
                                                    longitude: -79.384293)
 }
 
-final class LocationViewModel: NSObject,
+final class LocationsViewModel: NSObject,
                                CLLocationManagerDelegate,
                                ObservableObject {
     var locationManager: CLLocationManager?
