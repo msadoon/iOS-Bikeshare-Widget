@@ -202,7 +202,8 @@ struct BikeshareWidget: Widget {
     let locationManager = CLLocationManager()
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
+        StaticConfiguration(kind: kind,
+                            provider: NearbyStationProvider()) { entry in
             MapWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Nearest Bike Stations")

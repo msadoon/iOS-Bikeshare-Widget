@@ -6,7 +6,7 @@ final class StationsViewModel: ObservableObject {
     
     private let stationsStore = StationsStoreImpl()
     
-    func getStations() {
+    func getStations(handler: @escaping () -> Void) {
         stationsStore.fetch { result in
             switch result {
             case .success(let stations):
@@ -14,9 +14,7 @@ final class StationsViewModel: ObservableObject {
                     guard let strongSelf = self else { return }
                     
                     strongSelf.stations = stations
-                    let carData = try? JSONEncoder().encode(strongSelf.stations)
-                    
-                    UserDefaults(suiteName: "group.mubarak.bikeshare-widget")?.set(carData, forKey: "stations")
+                    handler()
                 }
             case .failure(let error):
                 print(error)

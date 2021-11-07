@@ -15,7 +15,7 @@ public enum LocationDefaults {
 final class LocationsViewModel: NSObject,
                                CLLocationManagerDelegate,
                                ObservableObject {
-    var locationManager: CLLocationManager?
+    private var locationManager: CLLocationManager?
     @Published var region = MKCoordinateRegion(center: LocationDefaults.coordinate,
                                                span: LocationDefaults.span)
     
@@ -27,6 +27,10 @@ final class LocationsViewModel: NSObject,
         } else {
             print("Show an alert to inform user they need to turn on location services.")
         }
+    }
+    
+    func updateRegion(to region: MKCoordinateRegion) {
+        self.region = region
     }
     
     private func checkLocationAuthorization() {
@@ -44,8 +48,9 @@ final class LocationsViewModel: NSObject,
         case .authorized,
              .authorizedAlways,
              .authorizedWhenInUse:
-            region = MKCoordinateRegion(center: locationManager.location?.coordinate ?? LocationDefaults.coordinate,
-                                        span: LocationDefaults.span)
+            let newRegion = MKCoordinateRegion(center: locationManager.location?.coordinate ?? LocationDefaults.coordinate, span: LocationDefaults.span)
+            
+            updateRegion(to: newRegion)
         @unknown default:
             break
         }

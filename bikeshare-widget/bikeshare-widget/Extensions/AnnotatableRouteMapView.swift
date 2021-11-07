@@ -10,8 +10,10 @@ import UIKit
 struct AnnotatableRouteMapView: UIViewRepresentable {
   typealias UIViewType = MKMapView
 
+  @EnvironmentObject var widgetInfo: WidgetInfo
+    
   @Binding var destinationLocation: CLLocationCoordinate2D?
-  @Binding var defaultRegion: MKCoordinateRegion
+  @Binding var region: MKCoordinateRegion
 
   func makeCoordinator() -> MapViewCoordinator {
     return MapViewCoordinator()
@@ -27,13 +29,16 @@ struct AnnotatableRouteMapView: UIViewRepresentable {
   }
     
   func updateUIView(_ uiView: MKMapView, context: Context) {
-      uiView.setRegion(defaultRegion, animated: true)
+      let widgetUserLocation = MKCoordinateRegion(center: widgetInfo.widgetsUserLocation, span: LocationDefaults.span)
+      
+      let newRegion = widgetInfo.updateMap ? widgetUserLocation : region
+      uiView.setRegion(newRegion, animated: true)
       
       guard let destinationLocation = destinationLocation else {
          return
       }
 
-      let userLocationPlacemark = MKPlacemark(coordinate: defaultRegion.center)
+      let userLocationPlacemark = MKPlacemark(coordinate: newRegion.center)
       let destinationLocationPlacemark = MKPlacemark(coordinate: destinationLocation)
       let destinationPointAnnotation = MKPointAnnotation()
       destinationPointAnnotation.coordinate = destinationLocationPlacemark.coordinate
