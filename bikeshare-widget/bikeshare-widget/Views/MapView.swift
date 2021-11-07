@@ -6,6 +6,7 @@ struct MapView: View {
     @ObservedObject private var stationsViewModel = StationsViewModel()
     
     @State private var showSheet = false
+    @State private var stationsUpdatedToClosestUser = false
     @State private var destinationLocation: CLLocationCoordinate2D?
     
     var body: some View {
@@ -18,10 +19,19 @@ struct MapView: View {
             Button("Stations") {
                 showSheet.toggle()
             }
-            .disabled(!stationsViewModel.stationsUpdatedForUserLocation)
+            .disabled(stationsViewModel.stations.isEmpty)
             .padding()
+            .onAppear {
+                stationsViewModel.getStations()
+                stationsUpdatedToClosestUser = false
+            }
             .onChange(of: locationsViewModel.region) { region in
-                stationsViewModel.getStations(userLocation: locationsViewModel.userLocation)
+                let userCurrentLocation = CLLocation(latitude: region.center.latitude,
+                                                     longitude: region.center.longitude)
+                
+                stationsViewModel.updateStations(to: userCurrentLocation,
+                                                 maxMetersDistance: nil)
+                stationsUpdatedToClosestUser = true
             }
         }
         .sheet(isPresented: $showSheet) {
