@@ -11,6 +11,7 @@ extension CLLocationCoordinate2D: Equatable {
         lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
     }
 }
+
 extension MKCoordinateSpan: Equatable {
     public static func == (lhs: MKCoordinateSpan, rhs: MKCoordinateSpan) -> Bool {
         lhs.latitudeDelta == rhs.latitudeDelta && lhs.longitudeDelta == rhs.longitudeDelta

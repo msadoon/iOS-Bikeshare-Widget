@@ -2,8 +2,7 @@ import SwiftUI
 import CoreLocation
 import MapKit
 
-struct Station: Identifiable, Decodable {
-
+struct Station: Identifiable, Codable {
     let id: String
     let name: String
     let address: String
@@ -48,4 +47,17 @@ struct Station: Identifiable, Decodable {
         let longitude = try container.decode(Double.self, forKey: .longitude)
         coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
+    
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+        
+      try container.encode(id, forKey: .id)
+      try container.encode(name, forKey: .name)
+      try container.encode(address, forKey: .address)
+      try container.encode(bikeCapacity, forKey: .bikeCapacity)
+      try container.encode(distance, forKey: .distance)
+      try container.encode(coordinates.latitude, forKey: .latitude)
+      try container.encode(coordinates.longitude, forKey: .longitude)
+    }
+    
 }

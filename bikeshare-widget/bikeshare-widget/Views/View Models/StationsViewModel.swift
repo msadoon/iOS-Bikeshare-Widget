@@ -14,6 +14,9 @@ final class StationsViewModel: ObservableObject {
                     guard let strongSelf = self else { return }
                     
                     strongSelf.stations = stations
+                    let carData = try? JSONEncoder().encode(strongSelf.stations)
+                    
+                    UserDefaults(suiteName: "group.mubarak.bikeshare-widget")?.set(carData, forKey: "stations")
                 }
             case .failure(let error):
                 print(error)
