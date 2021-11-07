@@ -1,8 +1,8 @@
 import Foundation
 import CoreLocation
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
-    static let shared = LocationManager()
+class WidgetLocationManager: NSObject, CLLocationManagerDelegate {
+    static let shared = WidgetLocationManager()
     private let manager = CLLocationManager()
     private var completionHandler: ((CLLocation) -> Void)?
     

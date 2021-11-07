@@ -4,7 +4,7 @@ import SwiftUI
 struct bikeshare_widgetApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppView()
         }
     }
 }

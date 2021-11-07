@@ -3,19 +3,22 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-struct MapEntry: TimelineEntry {
-    let date: Date
-    let nearestStations: [Station]
-    let userLocation: MKCoordinateRegion
-    let image: UIImage
-}
+//struct MapEntry: TimelineEntry {
+//    let date: Date
+//    let nearestStations: [Station]
+//    let userLocation: MKCoordinateRegion
+//    let image: UIImage
+//}
 
+/**
 struct NearbyStationProvider: TimelineProvider {
-    static let emptyLocationSet = [Station]()
-
-    private let stationsStore = StationsStoreImpl()
     
+//    static let emptyLocationSet = [Station]()
+//
+//    private let stationsStore = StationsStoreImpl()
+//
     // TODO: This is just a failsafe in case location services are not updated on launch
+    
     static var sampleUserLocation: MKCoordinateRegion {
         let latitude = CLLocationDegrees(43.640179)
         let longitude = CLLocationDegrees(-79.393377)
@@ -58,7 +61,7 @@ struct NearbyStationProvider: TimelineProvider {
             }
         }
         
-        LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
+        WidgetLocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
 
     func getTimeline(in context: Context,
@@ -85,7 +88,7 @@ struct NearbyStationProvider: TimelineProvider {
             }
         }
         
-        LocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
+        WidgetLocationManager.shared.fetchLocation(handler: updateCompletionAfterFetchUserLocation)
     }
     
     // MARK: Helpers
@@ -200,6 +203,28 @@ struct NearbyStationProvider: TimelineProvider {
             pinImage?.draw(at: point)
         }
     }
+    
+}
+**/
+
+struct DumEntry: TimelineEntry {
+    let date: Date
+}
+
+struct DumProvider: TimelineProvider {
+    func placeholder(in context: Context) -> DumEntry {
+        DumEntry(date: Date())
+    }
+    func getSnapshot(in context: Context, completion: @escaping (DumEntry) -> Void) {
+        let dumEntry = DumEntry(date: Date())
+        completion(dumEntry)
+    }
+    
+    func getTimeline(in context: Context, completion: @escaping (Timeline<DumEntry>) -> Void) {
+        let dumEntry = DumEntry(date: Date())
+        let timeline = Timeline(entries: [dumEntry], policy: .never)
+        completion(timeline)
+    }
 }
 
 @main
@@ -208,22 +233,18 @@ struct BikeshareWidget: Widget {
     let locationManager = CLLocationManager()
 
     var body: some WidgetConfiguration {
+        /**
         StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
             MapWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Nearest Bike Stations")
         .description("Show nearest bike stations")
         .supportedFamilies([.systemLarge])
+         */
+        
+        StaticConfiguration(kind: kind, provider: DumProvider()) { _ in EmptyView() }
+        .configurationDisplayName("Nearest Bike Stations")
+        .description("Show nearest bike stations")
+        .supportedFamilies([.systemLarge])
     }
 }
-
-struct BikeshareWidget_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView(entry: MapEntry(date: Date(),
-                                nearestStations: NearbyStationProvider.emptyLocationSet,
-                                userLocation: NearbyStationProvider.sampleUserLocation,
-                                image: UIImage(systemName: "map")!))
-            .previewContext(WidgetPreviewContext(family: .systemLarge))
-    }
-}
-

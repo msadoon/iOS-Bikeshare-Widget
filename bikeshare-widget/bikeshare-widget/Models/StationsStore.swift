@@ -1,10 +1,3 @@
-//
-//  StationsStore.swift
-//  bikeshare-widget
-//
-//  Created by Tom McNeely on 2021-02-20.
-//
-
 import Foundation
 
 protocol StationsStore {
@@ -34,6 +27,7 @@ class StationsStoreImpl: StationsStore {
     func fetch(completion: @escaping ((Result<[Station], APIError>) -> Void)) {
         let urlString = "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information"
         api.getResource(urlString: urlString) { (result: Result<StationInformationResponse, APIError>) in
+            // TODO: Handle error?
             completion(result.map { $0.data.stations })
         }
     }
