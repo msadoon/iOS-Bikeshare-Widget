@@ -3,15 +3,27 @@ import MapKit
 
 final class StationsViewModel: ObservableObject {
     @Published var stations = [Station]()
+    @Published var stationsUpdatedForUserLocation = false
     
     private let stationsStore = StationsStoreImpl()
     
-    func getStations() {
+    func getStations(userLocation: CLLocation?) {
+        
         stationsStore.fetch { result in
             switch result {
             case .success(let stations):
-                DispatchQueue.main.async {
-                    self.stations = stations
+                DispatchQueue.main.async { [weak self] in
+                    guard let strongSelf = self else { return }
+                    
+                    if let userLocation = userLocation {
+                        strongSelf.stations = strongSelf.closestLocations(to: userLocation,
+                                                                          stations: stations,
+                                                                          maxMetersDistance: nil)
+                        strongSelf.stationsUpdatedForUserLocation = true
+                    } else {
+                        strongSelf.stationsUpdatedForUserLocation = false
+                        strongSelf.stations = stations
+                    }
                 }
             case .failure(let error):
                 print(error)
@@ -20,6 +32,7 @@ final class StationsViewModel: ObservableObject {
     }
 
     private func closestLocations(to userLocation: CLLocation,
+                                  stations: [Station],
                                   maxMetersDistance: Double?) -> [Station] {
         var allDistancesToUser = [(Double, Station)]()
         

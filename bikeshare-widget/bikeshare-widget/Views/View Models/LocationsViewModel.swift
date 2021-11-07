@@ -18,6 +18,7 @@ final class LocationsViewModel: NSObject,
     var locationManager: CLLocationManager?
     @Published var region = MKCoordinateRegion(center: LocationDefaults.coordinate,
                                                span: LocationDefaults.span)
+    @Published var userLocation: CLLocation?
     
     func checkIfLocationServicesIsEnabled() {
         if CLLocationManager.locationServicesEnabled() {
@@ -46,6 +47,7 @@ final class LocationsViewModel: NSObject,
              .authorizedWhenInUse:
             region = MKCoordinateRegion(center: locationManager.location?.coordinate ?? LocationDefaults.coordinate,
                                         span: LocationDefaults.span)
+            userLocation = locationManager.location
         @unknown default:
             break
         }
