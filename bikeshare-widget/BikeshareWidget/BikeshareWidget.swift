@@ -3,20 +3,17 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-//struct MapEntry: TimelineEntry {
-//    let date: Date
-//    let nearestStations: [Station]
-//    let userLocation: MKCoordinateRegion
-//    let image: UIImage
-//}
+struct MapEntry: TimelineEntry {
+    let date: Date
+    let nearestStations: [Station]
+    let userLocation: MKCoordinateRegion
+    let image: UIImage
+}
 
-/**
 struct NearbyStationProvider: TimelineProvider {
     
-//    static let emptyLocationSet = [Station]()
-//
-//    private let stationsStore = StationsStoreImpl()
-//
+    static let emptyLocationSet = [Station]()
+
     // TODO: This is just a failsafe in case location services are not updated on launch
     
     static var sampleUserLocation: MKCoordinateRegion {
@@ -44,19 +41,13 @@ struct NearbyStationProvider: TimelineProvider {
         }
         
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            loadNearestLocations(userLocation: userLocation) { result in
-                switch result {
-                case let .success(nearbyStations):
-                    contentUpdate(context: context,
-                                  locations: nearbyStations,
-                                  updatedUserLocation: userLocation) { mapEntry in
-                        DispatchQueue.main.async {
-                            completion(mapEntry)
-                        }
+            loadNearestLocations(userLocation: userLocation) { nearbyStations in
+                contentUpdate(context: context,
+                              locations: nearbyStations,
+                              updatedUserLocation: userLocation) { mapEntry in
+                    DispatchQueue.main.async {
+                        completion(mapEntry)
                     }
-                case .failure(_):
-                    // TODO: Handle error case
-                    break
                 }
             }
         }
@@ -67,23 +58,17 @@ struct NearbyStationProvider: TimelineProvider {
     func getTimeline(in context: Context,
                      completion: @escaping (Timeline<MapEntry>) -> ()) {
         let updateCompletionAfterFetchUserLocation: (CLLocation) -> Void = { userLocation in
-            loadNearestLocations(userLocation: userLocation) { result in
-                switch result {
-                case let .success(nearbyStations):
-                    contentUpdate(context: context,
-                                  locations: nearbyStations,
-                                  updatedUserLocation: userLocation) { mapEntry in
-                        let date = Date()
-                        let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
-                        let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
-
-                        DispatchQueue.main.async {
-                            completion(timeline)
-                        }
+            loadNearestLocations(userLocation: userLocation) { nearbyStations in
+                contentUpdate(context: context,
+                              locations: nearbyStations,
+                              updatedUserLocation: userLocation) { mapEntry in
+                    let date = Date()
+                    let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: date)!
+                    let timeline = Timeline(entries: [mapEntry], policy: .after(nextUpdate))
+                    
+                    DispatchQueue.main.async {
+                        completion(timeline)
                     }
-                case .failure(_):
-                    // TODO: Handle error case
-                    break
                 }
             }
         }
@@ -128,13 +113,18 @@ struct NearbyStationProvider: TimelineProvider {
         }
     }
     
-    private func loadNearestLocations(userLocation: CLLocation, completion: @escaping (Result<[Station], APIError>) -> Void) {
-        stationsStore.fetch { result in
-            let mappedResult = result.map { stations in
-                return closestLocations(userLocation: userLocation, stationLocations: stations)
-            }
-            completion(mappedResult)
+    private func loadNearestLocations(userLocation: CLLocation,
+                                      completion: @escaping ([Station]) -> Void) {
+        guard let encodedData  = UserDefaults(suiteName: "group.mubarak.bikeshare-widget")?.object(forKey: "stations") as? Data,
+        let decodedStations = try? JSONDecoder().decode([Station].self, from: encodedData) else {
+            completion([])
+            
+            return
         }
+        
+        let mappedResult = closestLocations(userLocation: userLocation, stationLocations: decodedStations)
+        
+        completion(mappedResult)
     }
     
     private func closestLocations(userLocation: CLLocation, stationLocations: [Station]) -> [Station] {
@@ -205,27 +195,6 @@ struct NearbyStationProvider: TimelineProvider {
     }
     
 }
-**/
-
-struct DumEntry: TimelineEntry {
-    let date: Date
-}
-
-struct DumProvider: TimelineProvider {
-    func placeholder(in context: Context) -> DumEntry {
-        DumEntry(date: Date())
-    }
-    func getSnapshot(in context: Context, completion: @escaping (DumEntry) -> Void) {
-        let dumEntry = DumEntry(date: Date())
-        completion(dumEntry)
-    }
-    
-    func getTimeline(in context: Context, completion: @escaping (Timeline<DumEntry>) -> Void) {
-        let dumEntry = DumEntry(date: Date())
-        let timeline = Timeline(entries: [dumEntry], policy: .never)
-        completion(timeline)
-    }
-}
 
 @main
 struct BikeshareWidget: Widget {
@@ -233,16 +202,10 @@ struct BikeshareWidget: Widget {
     let locationManager = CLLocationManager()
 
     var body: some WidgetConfiguration {
-        /**
-        StaticConfiguration(kind: kind, provider: NearbyStationProvider()) { entry in
+        StaticConfiguration(kind: kind,
+                            provider: NearbyStationProvider()) { entry in
             MapWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Nearest Bike Stations")
-        .description("Show nearest bike stations")
-        .supportedFamilies([.systemLarge])
-         */
-        
-        StaticConfiguration(kind: kind, provider: DumProvider()) { _ in EmptyView() }
         .configurationDisplayName("Nearest Bike Stations")
         .description("Show nearest bike stations")
         .supportedFamilies([.systemLarge])

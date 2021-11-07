@@ -6,7 +6,7 @@ final class StationsViewModel: ObservableObject {
     
     private let stationsStore = StationsStoreImpl()
     
-    func getStations() {
+    func getStations(handler: @escaping () -> Void) {
         stationsStore.fetch { result in
             switch result {
             case .success(let stations):
@@ -14,6 +14,7 @@ final class StationsViewModel: ObservableObject {
                     guard let strongSelf = self else { return }
                     
                     strongSelf.stations = stations
+                    handler()
                 }
             case .failure(let error):
                 print(error)
