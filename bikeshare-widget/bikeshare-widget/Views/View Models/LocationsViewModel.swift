@@ -1,5 +1,6 @@
 import CoreLocation
 import MapKit
+import SwiftUI
 
 public enum LocationDefaults {
     /**
@@ -15,11 +16,13 @@ public enum LocationDefaults {
 final class LocationsViewModel: NSObject,
                                CLLocationManagerDelegate,
                                ObservableObject {
+    private let stationsStore = StationsStoreImpl()
     private var locationManager: CLLocationManager?
-    @Published var region = MKCoordinateRegion(center: LocationDefaults.coordinate,
-                                               span: LocationDefaults.span)
     
-    func checkIfLocationServicesIsEnabled() {
+    @Published var region = MKCoordinateRegion()
+    @Published var stations = [Station]()
+    
+    func updateLocationAndStations() {
         if CLLocationManager.locationServicesEnabled() {
             locationManager = CLLocationManager()
             locationManager?.activityType = .fitness
@@ -29,7 +32,11 @@ final class LocationsViewModel: NSObject,
         }
     }
     
-    func updateRegion(to region: MKCoordinateRegion) {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
+    }
+    
+    private func updateRegion(to region: MKCoordinateRegion) {
         self.region = region
     }
     
@@ -48,15 +55,81 @@ final class LocationsViewModel: NSObject,
         case .authorized,
              .authorizedAlways,
              .authorizedWhenInUse:
-            let newRegion = MKCoordinateRegion(center: locationManager.location?.coordinate ?? LocationDefaults.coordinate, span: LocationDefaults.span)
-            
-            updateRegion(to: newRegion)
+            refreshCurrentUserLocation()
+            getStations() { [weak self] stations, location in
+                guard let strongSelf = self else { return }
+                
+                DispatchQueue.main.async {
+                    strongSelf.stations = strongSelf.updateStations(to: location,
+                                                                    stations: stations,
+                                                                    maxMetersDistance: nil)
+                }
+            }
         @unknown default:
             break
         }
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
+    private func refreshCurrentUserLocation() {
+        guard let locationManager = locationManager,
+              let userActualLocation = locationManager.location?.coordinate else {
+            return
+        }
+        
+        let newRegion = MKCoordinateRegion(center:  userActualLocation,
+                                           span: LocationDefaults.span)
+        
+        self.region = newRegion
+    }
+    
+    private func getStations(handler: @escaping ([Station], CLLocation) -> Void) {
+        stationsStore.fetch { [weak self] result in
+            guard let strongSelf = self else { return }
+            
+            switch result {
+            case .success(let fetchedStations):
+                let userCurrentLocation = CLLocation(latitude: strongSelf.region.center.latitude,
+                                                     longitude: strongSelf.region.center.longitude)
+                
+                handler(fetchedStations, userCurrentLocation)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    private func updateStations(to userLocation: CLLocation,
+                                stations: [Station],
+                        maxMetersDistance: Double?) -> [Station] {
+        var allDistancesToUser = [(Double, Station)]()
+        
+        for station in stations {
+            let comparableLocation = CLLocation(latitude: station.coordinates.latitude,
+                                                longitude: station.coordinates.longitude)
+            let distanceToUser = comparableLocation.distance(from: userLocation)
+            let distanceAndStation = (distanceToUser, station)
+            
+            if let maxMetersDistance = maxMetersDistance {
+                if distanceToUser <= maxMetersDistance {
+                    allDistancesToUser.append(distanceAndStation)
+                }
+            } else {
+                allDistancesToUser.append(distanceAndStation)
+            }
+        }
+        
+        let closestStationDistancesToUser = allDistancesToUser.sorted(by: { $0.0 < $1.0 })
+        let closestStationsToUser = closestStationDistancesToUser.map({ (accurateDistance, station) -> Station in
+            let updatedStationWithDistance = Station(id: station.id,
+                                                     name: station.name,
+                                                     address: station.address,
+                                                     bikeCapacity: station.bikeCapacity,
+                                                     distance: accurateDistance,
+                                                     coordinates: station.coordinates)
+            
+            return updatedStationWithDistance
+        })
+        
+        return closestStationsToUser
     }
 }

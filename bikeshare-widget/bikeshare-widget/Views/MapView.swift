@@ -4,44 +4,33 @@ import SwiftUI
 struct MapView: View {
     @EnvironmentObject var widgetInfo: WidgetInfo
     
-    @ObservedObject private var locationsViewModel = LocationsViewModel()
-    @ObservedObject private var stationsViewModel = StationsViewModel()
-    
     @State private var showSheet = false
     @State private var destinationLocation: CLLocationCoordinate2D?
+    @ObservedObject private var locationsViewModel = LocationsViewModel()
     
     var body: some View {
         VStack {
             AnnotatableRouteMapView(destinationLocation: $destinationLocation,
                                     region: $locationsViewModel.region)
-                .environmentObject(widgetInfo)
                 .onAppear {
-                    locationsViewModel.checkIfLocationServicesIsEnabled()
+                    locationsViewModel.updateLocationAndStations()
                 }
-                .onChange(of: locationsViewModel.region) { newRegion in
-                    stationsViewModel.getStations() {
-                        let userCurrentLocation = CLLocation(latitude: newRegion.center.latitude, longitude: newRegion.center.longitude)
-                        
-                        stationsViewModel.updateStations(to: userCurrentLocation,
-                                                         maxMetersDistance: nil)
-                    }
-                    
+                ._onBindingChange($locationsViewModel.region) { newRegion in
                     if widgetInfo.route {
-                        destinationLocation = stationsViewModel.stations.first?.coordinates
+                        destinationLocation = locationsViewModel.stations.first?.coordinates
                     }
                 }
             Button("Stations") {
                 showSheet.toggle()
             }
-            .disabled(stationsViewModel.stations.isEmpty)
+            .disabled(locationsViewModel.stations.isEmpty)
             .padding()
             .sheet(isPresented: $showSheet) {
-                List(stationsViewModel.stations) { station in
+                List(locationsViewModel.stations) { station in
                     StationRow(station: station)
                         .onTapGesture {
                             destinationLocation = station.coordinates
                             widgetInfo.route = false
-                            widgetInfo.updateMap = false
                             showSheet.toggle()
                         }
                 }

@@ -17,7 +17,6 @@
 		8E93664227373760001EA47C /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D0C1FC25E1857700F15128 /* APIService.swift */; };
 		8E93664427373BA3001EA47C /* BikeshareWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC0A25E1A9E70062D83F /* BikeshareWidget.swift */; };
 		8E93664727374323001EA47C /* LocationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93664627374323001EA47C /* LocationsViewModel.swift */; };
-		8E93664A273759E0001EA47C /* StationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E936649273759E0001EA47C /* StationsViewModel.swift */; };
 		8E93664D27376486001EA47C /* Map+Related.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93664C27376486001EA47C /* Map+Related.swift */; };
 		8E93664F2737702D001EA47C /* AnnotatableRouteMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93664E2737702D001EA47C /* AnnotatableRouteMapView.swift */; };
 		8E93665027384847001EA47C /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E57DC2625E1C3790062D83F /* Station.swift */; };
@@ -89,7 +88,6 @@
 		8E93663D2736F32D001EA47C /* BikeshareWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BikeshareWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8E93663E2736F539001EA47C /* BikeshareWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BikeshareWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8E93664627374323001EA47C /* LocationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LocationsViewModel.swift; path = "bikeshare-widget/Views/View Models/LocationsViewModel.swift"; sourceTree = SOURCE_ROOT; };
-		8E936649273759E0001EA47C /* StationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewModel.swift; sourceTree = "<group>"; };
 		8E93664C27376486001EA47C /* Map+Related.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Related.swift"; sourceTree = "<group>"; };
 		8E93664E2737702D001EA47C /* AnnotatableRouteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatableRouteMapView.swift; sourceTree = "<group>"; };
 		8E93665527385155001EA47C /* WidgetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInfo.swift; sourceTree = "<group>"; };
@@ -214,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				8E93664627374323001EA47C /* LocationsViewModel.swift */,
-				8E936649273759E0001EA47C /* StationsViewModel.swift */,
 			);
 			name = "View Models";
 			path = "Views/View Models";
@@ -478,7 +475,6 @@
 				7A15A85725E2179D00EC33D4 /* MapView.swift in Sources */,
 				8EC6735225E07FDB003533BE /* AppView.swift in Sources */,
 				8EC6735025E07FDB003533BE /* bikeshare_widgetApp.swift in Sources */,
-				8E93664A273759E0001EA47C /* StationsViewModel.swift in Sources */,
 				7A9D50BC25E2B81F00F5F0F9 /* StationRow.swift in Sources */,
 				8E9366402737373D001EA47C /* Station.swift in Sources */,
 				8E93664127373752001EA47C /* StationsStore.swift in Sources */,
